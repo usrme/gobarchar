@@ -41,7 +41,7 @@ $ # First session
 $ ./gobarchar
 2024/01/07 20:02:20 listening on: 8080
 $ # Second session
-curl "http://localhost:8080/?2012=8&2013=6&2014=8&2015=14"
+$ curl "http://localhost:8080/?2012=8&2013=6&2014=8&2015=14"
 2012     8 ██████████████▎
 2013     6 ██████████▋
 2014     8 ██████████████▎
