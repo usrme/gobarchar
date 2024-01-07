@@ -40,6 +40,7 @@ func generateBarChart(w http.ResponseWriter, r *http.Request) {
 	sortIndex := -1
 	for i, pair := range orderedParams {
 		kv := strings.Split(pair, "=")
+		// TODO: Add logic for 'layout' query parameter to support vertical layout too
 		if kv[0] == "sort" {
 			// Store where the 'sort' query parameter was first found
 			sortIndex = i
