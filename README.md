@@ -5,6 +5,8 @@
 
 For whatever reason, I was enamored with [Alex Chan's snippet of code](https://alexwlchan.net/2018/ascii-bar-charts/) where a key-value pair list is turned into a passable bar chart for quick demonstration purposes. When writing a [blog post mentioning the number of books I've read](https://usrme.xyz/posts/glee-in-2023/#books-read) I wanted to quickly visualize the values, but didn't want to spend too much time on it. The solution above worked wonders! But I wanted the same thing without having to actually open a terminal (heresy, I know), thus this thing was born: the graphing solution that might not suit you 📊
 
+![GoBarChar - animated GIF demo](examples/demo.gif)
+
 ## Features
 
 - Send data and get graph back
