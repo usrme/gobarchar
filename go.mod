@@ -1,3 +1,3 @@
-module github.com/usrme/gobarchar/v2
+module github.com/usrme/gobarchar
 
 go 1.21
