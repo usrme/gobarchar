@@ -83,7 +83,7 @@ rm -rf "${GOPATH}/pkg/mod/github.com/usrme/gobarchar*"
 
 ## Acknowledgments
 
-Heavily inspired by the ['Drawing ASCII bar charts' blog post](https://alexwlchan.net/2018/ascii-bar-charts/) by Alex Chan.
+Heavily inspired by the ['Drawing ASCII bar charts' blog post](https://alexwlchan.net/2018/ascii-bar-charts/) by Alex Chan. If there was any prior art that pretty much does the same thing (present an ASCII graph based on query parameters or request payload), then I honestly wasn't aware of it and just created this for fun.
 
 ## License
 
