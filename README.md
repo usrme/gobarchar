@@ -15,6 +15,8 @@ Try the same link as in the demo above: https://gobarchar.fly.dev/?2012=8&2013=6
 - Perform calculation for average to the nearest integer
 - Perform calculation for sum of all values
 - Sort ascending or descending, or don't sort at all
+  - Add the `sort` query parameter and pass either `asc` or `desc` as the value
+  - The default is to keep the rows ordered as the query parameters are
 - Maybe coming: change layout from horizontal to vertical!
 
 ## Usage
