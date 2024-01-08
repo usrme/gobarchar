@@ -7,6 +7,8 @@ For whatever reason, I was enamored with [Alex Chan's snippet of code](https://a
 
 ![GoBarChar - animated GIF demo](examples/demo.gif)
 
+Try the same link as in the demo above: https://gobarchar.fly.dev/?2012=8&2013=6&2014=8&2015=14
+
 ## Features
 
 - Send data and get graph back
