@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"math"
+	"math/rand"
 	"net/http"
 	"os"
 	"sort"
@@ -127,6 +128,24 @@ func generateBarChartContent(r *http.Request) string {
 }
 
 func generateBarChart(w http.ResponseWriter, r *http.Request) {
+	// Check if there are any query parameters; if not, add random key-value pairs
+	if len(r.URL.Query()) == 0 {
+		params := r.URL.Query()
+
+		for i := 0; i < 6; i++ {
+			var month string
+			for {
+				month = randomMonth()
+				if !params.Has(month) {
+					break
+				}
+			}
+			value := rand.Intn(101)
+			params.Add(month, strconv.Itoa(value))
+		}
+		r.URL.RawQuery = params.Encode()
+	}
+
 	chartContent := generateBarChartContent(r)
 
 	agent := r.UserAgent()
@@ -138,7 +157,7 @@ func generateBarChart(w http.ResponseWriter, r *http.Request) {
 	pageData := PageData{
 		Title:    PageTitle,
 		Chart:    template.HTML(chartContent),
-		ChartUrl: r.RequestURI,
+		ChartUrl: r.URL.String(),
 	}
 
 	tmpl, err := template.New("layout").Parse(layout)
@@ -154,6 +173,24 @@ func generateBarChart(w http.ResponseWriter, r *http.Request) {
 		log.Println("error executing template:", err)
 		return
 	}
+}
+
+func randomMonth() string {
+	months := []string{
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December",
+	}
+	return months[rand.Intn(len(months))]
 }
 
 func calculateBars(count, remainder int) string {

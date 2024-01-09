@@ -7,7 +7,7 @@ For whatever reason, I was enamored with [Alex Chan's snippet of code](https://a
 
 ![GoBarChar - animated GIF demo](examples/demo.gif)
 
-Try the same link as in the demo above: https://gobarchar.fly.dev/?2012=8&2013=6&2014=8&2015=14
+Try the same link as in the demo above, https://gobarchar.fly.dev/?2012=8&2013=6&2014=8&2015=14, or just load the site without any parameters to get random data.
 
 ## Features
 
@@ -26,37 +26,43 @@ Try the same link as in the demo above: https://gobarchar.fly.dev/?2012=8&2013=6
 (Excuse the pun). Instead of installing the thing, you can also access the same functionality using the instance hosted on [Fly](https://fly.io/) at https://gobarchar.fly.dev/:
 
 ```console
-$ curl "https://gobarchar.fly.dev/?2012=8&2013=6&2014=8&2015=14"
-2012     8 ██████████████▎
-2013     6 ██████████▋
-2014     8 ██████████████▎
-2015    14 ████████████████████████▉
-Avg.     9 ████████████████
-Total   36 ████████████████████████
+$ curl https://gobarchar.fly.dev/
+April        7 █▊
+February    88 ██████████████████████▏
+June        16 ████
+March       99 █████████████████████████
+October     19 ████▊
+September   98 ████████████████████████▋
+Avg.        55 █████████████▉
+Total      327 █████████████████████████
 ```
 
-It should always be available for usage, but if it's not then do open up an issue and I'll see what I can do.
+Loading the page without any query parameters randomly chooses some data and will do so upon every reload; a link will be presented at the bottom to link to the data. The site should always be available for usage, but if it's not then do open up an issue and I'll see what I can do.
 
 ### Local
 
-After [installation](#installation), execute `gobarchar`, which by default starts a web server listening on port 8080, though you can specify a different port through the `PORT` environment variable. Once the web server is running, you can use something like `curl` to perform requests to it using query parameters to specify the data to be graphed:
+After [installation](#installation), execute `gobarchar`, which by default starts a web server listening on port 8080, though you can specify a different port through the `PORT` environment variable. Once the web server is running, you can use something like `curl` to perform requests:
 
 ```console
 $ # First session
 $ ./gobarchar
 2024/01/07 20:02:20 listening on: 8080
 $ # Second session
-$ curl "http://localhost:8080/?2012=8&2013=6&2014=8&2015=14"
-2012     8 ██████████████▎
-2013     6 ██████████▋
-2014     8 ██████████████▎
-2015    14 ████████████████████████▉
-Avg.     9 ████████████████
-Total   36 ████████████████████████
+$ curl localhost:8080
+December   95 █████████████████████████
+January     9 ██▎
+July       88 ███████████████████████▏
+June        8 ██
+March      58 ███████████████▎
+November   87 ██████████████████████▉
+Avg.       58 ███████████████▎
+Total     345 █████████████████████████
 $ # First session
 2024/01/07 20:02:20 listening on: 8080
 2024/01/07 20:02:29 completed in: 145.072µs
 ```
+
+If no query parameters are provided then random data is generated.
 
 ## Installation
 
