@@ -129,6 +129,12 @@ func generateBarChartContent(r *http.Request) string {
 func generateBarChart(w http.ResponseWriter, r *http.Request) {
 	chartContent := generateBarChartContent(r)
 
+	agent := r.UserAgent()
+	if strings.HasPrefix(agent, "curl") || strings.HasPrefix(agent, "Wget") {
+		w.Write([]byte(chartContent))
+		return
+	}
+
 	pageData := PageData{
 		Title:    PageTitle,
 		Chart:    template.HTML(chartContent),
