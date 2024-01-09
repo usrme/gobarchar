@@ -143,14 +143,14 @@ func generateBarChart(w http.ResponseWriter, r *http.Request) {
 
 	tmpl, err := template.New("layout").Parse(layout)
 	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		log.Println("error parsing template:", err)
 		return
 	}
 
 	err = tmpl.Execute(w, pageData)
 	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		log.Println("error executing template:", err)
 		return
 	}
