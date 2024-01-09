@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
 )
@@ -85,17 +84,7 @@ Total  142 ███████████████████████
 			if err != nil {
 				t.Fatal(err)
 			}
-
-			rr := httptest.NewRecorder()
-			handler := http.HandlerFunc(generateBarChart)
-
-			handler.ServeHTTP(rr, req)
-
-			if rr.Code != http.StatusOK {
-				t.Errorf("Expected status code 200, got %d", rr.Code)
-			}
-
-			actual := strings.TrimSpace(rr.Body.String())
+			actual := strings.TrimSpace(generateBarChartContent(req))
 			if actual != testCase.expected {
 				t.Errorf("Unexpected output:\nExpected:\n%s\nGot:\n%s", testCase.expected, actual)
 			}

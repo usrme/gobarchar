@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"math"
 	"net/http"
@@ -11,6 +12,14 @@ import (
 	"strings"
 	"time"
 )
+
+var PageTitle string = "GoBarChar"
+
+type PageData struct {
+	Title    string
+	Chart    template.HTML
+	ChartUrl string
+}
 
 type Entry struct {
 	Label string
@@ -23,7 +32,7 @@ func (a ByValue) Len() int           { return len(a) }
 func (a ByValue) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByValue) Less(i, j int) bool { return a[i].Value < a[j].Value }
 
-func generateBarChart(w http.ResponseWriter, r *http.Request) {
+func generateBarChartContent(r *http.Request) string {
 	// Use custom type to make sorting easier
 	data := make([]Entry, 0)
 	maxValue, total := 0, 0
@@ -93,6 +102,7 @@ func generateBarChart(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	var chartContent strings.Builder
 	maximumBarChunk := 0
 	for i := range orderedParams {
 		// Skip parsing the total for now to not interfere with calculating
@@ -109,10 +119,35 @@ func generateBarChart(w http.ResponseWriter, r *http.Request) {
 		}
 
 		bar := calculateBars(barChunks, remainder)
-		fmt.Fprintf(w, "%s %4d %s\n", padRight(data[i].Label, longestLabelLength), data[i].Value, bar)
+		chartContent.WriteString(fmt.Sprintf("%s %4d %s\n", padRight(data[i].Label, longestLabelLength), data[i].Value, bar))
 	}
 	bar := calculateBars(maximumBarChunk, 0)
-	fmt.Fprintf(w, "%s %4d %s\n", padRight("Total", longestLabelLength), total, bar)
+	chartContent.WriteString(fmt.Sprintf("%s %4d %s\n", padRight("Total", longestLabelLength), total, bar))
+	return chartContent.String()
+}
+
+func generateBarChart(w http.ResponseWriter, r *http.Request) {
+	chartContent := generateBarChartContent(r)
+
+	pageData := PageData{
+		Title:    PageTitle,
+		Chart:    template.HTML(chartContent),
+		ChartUrl: r.RequestURI,
+	}
+
+	tmpl, err := template.New("layout").Parse(layout)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Println("error parsing template:", err)
+		return
+	}
+
+	err = tmpl.Execute(w, pageData)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Println("error executing template:", err)
+		return
+	}
 }
 
 func calculateBars(count, remainder int) string {
@@ -157,3 +192,23 @@ func main() {
 	http.Handle("/", timer(http.HandlerFunc(generateBarChart)))
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
+
+var layout string = `<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{.Title}}</title>
+</head>
+<style>
+	pre {
+		user-select: all;
+	}
+</style>
+<body>
+	<pre>{{.Chart}}</pre>
+	<hr>
+	<p>What is this? This is a small <a href="https://github.com/usrme/gobarchar">project</a> to generate ASCII bar charts using just query parameters.</p>
+	<p>Link used to generate the current chart: <a href="{{.ChartUrl}}">{{.ChartUrl}}</p>
+</body>
+</html>`
