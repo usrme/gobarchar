@@ -1,4 +1,4 @@
-package main
+package gobarchar
 
 import (
 	"net/http"
@@ -80,11 +80,11 @@ Total  142 ███████████████████████
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			req, err := http.NewRequest("GET", "/?"+testCase.queryParams, nil)
+			r, err := http.NewRequest("GET", "/?"+testCase.queryParams, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
-			actual := strings.TrimSpace(generateBarChartContent(req))
+			actual := strings.TrimSpace(createBarChart(r))
 			if actual != testCase.expected {
 				t.Errorf("Unexpected output:\nExpected:\n%s\nGot:\n%s", testCase.expected, actual)
 			}
