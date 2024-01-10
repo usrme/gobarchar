@@ -22,5 +22,5 @@
 **/go.work
 
 # Executable
-**/gobarchar
+cmd/gobarchar/gobarchar
 fly.toml
