@@ -79,7 +79,7 @@ go install github.com/usrme/gobarchar@latest
 ```bash
 git clone https://github.com/usrme/gobarchar.git
 cd gobarchar
-go build
+go build -o gobarchar cmd/gobarchar/main.go
 ```
 
 ## Removal
