@@ -27,4 +27,5 @@ primary_region = "ams"
 [[vm]]
   cpu_kind = "shared"
   cpus = 1
+  # The minimum amount that can be used
   memory_mb = 256
