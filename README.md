@@ -45,7 +45,7 @@ After [installation](#installation), execute `gobarchar`, which by default start
 
 ```console
 $ # First session
-$ ./gobarchar
+$ gobarchar
 2024/01/07 20:02:20 listening on: 8080
 $ # Second session
 $ curl localhost:8080
