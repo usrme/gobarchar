@@ -7,7 +7,7 @@ For whatever reason, I was enamored with [Alex Chan's snippet of code](https://a
 
 ![GoBarChar - animated GIF demo](examples/demo.gif)
 
-Try the same link as in the demo above, https://gobarchar.fly.dev/?2012=8&2013=6&2014=8&2015=14, or just load the site without any parameters to get random data.
+Try the same link as in the demo above, https://gobarchar.usrme.xyz/?2012=8&2013=6&2014=8&2015=14, or just load the site without any parameters to get random data.
 
 ## Features
 
@@ -23,10 +23,10 @@ Try the same link as in the demo above, https://gobarchar.fly.dev/?2012=8&2013=6
 
 ### On the Fly
 
-(Excuse the pun). Instead of installing the thing, you can also access the same functionality using the instance hosted on [Fly](https://fly.io/) at https://gobarchar.fly.dev/:
+(Excuse the pun). Instead of installing the thing, you can also access the same functionality using the instance hosted on [Fly](https://fly.io/) at https://gobarchar.usrme.xyz/:
 
 ```console
-$ curl https://gobarchar.fly.dev/
+$ curl https://gobarchar.usrme.xyz/
 April        7 █▊
 February    88 ██████████████████████▏
 June        16 ████
