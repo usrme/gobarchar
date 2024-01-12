@@ -26,7 +26,18 @@ var defaultTmpl string = `<!DOCTYPE html>
 	<title>{{.Title}}</title>
 </head>
 <style>
+	* {
+		box-sizing: border-box;
+	}
+	body {
+		font-family: sans-serif;
+		line-height: 1.33;
+		margin: 0 auto;
+		max-width: 650px;
+		padding: 1rem;
+	}
 	pre {
+		overflow: auto;
 		user-select: all;
 	}
 	a {
@@ -34,11 +45,20 @@ var defaultTmpl string = `<!DOCTYPE html>
 	}
 </style>
 <body>
-	<pre>{{.Chart}}</pre>
-	<hr>
+	<h1>GoBarChar</h1>
+	<p><strong>The graphing solution that might not suit you 📊</strong></p>
+	<hr />
 	<p>What is this? This is a small <a href="https://github.com/usrme/gobarchar">project</a> to generate ASCII bar charts using just query parameters.</p>
-	<p>Link used to generate the current chart: <a href="{{.ChartUrl}}">{{.ChartUrl}}</p>
+	<br/>
+	<pre>{{.Chart}}</pre>
+	<br/>
+	<hr>
+	<p>Link used to generate the current chart: <a href="{{.ChartUrl}}">{{.ChartUrl}}</a></p>
+	<hr>
 </body>
+<footer>
+	<small>Hosted on <a href="https://fly.io">Fly</a>.</small>
+</footer>
 </html>`
 
 type pageData struct {
