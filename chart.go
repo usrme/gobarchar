@@ -2,8 +2,6 @@ package gobarchar
 
 import (
 	"fmt"
-	"html/template"
-	"log"
 	"math"
 	"math/rand"
 	"net/http"
@@ -12,19 +10,12 @@ import (
 	"strings"
 )
 
-func init() {
-	tpl = template.Must(template.New("").Parse(defaultTmpl))
-}
-
-var tpl *template.Template
-
-var defaultTmpl string = `<!DOCTYPE html>
+var htmlFirstHalf string = `<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{{.Title}}</title>
-</head>
+	<title>GoBarChar</title>
 <style>
 	* {
 		box-sizing: border-box;
@@ -44,28 +35,21 @@ var defaultTmpl string = `<!DOCTYPE html>
 		word-break: break-all;
 	}
 </style>
+</head>
 <body>
 	<h1>GoBarChar</h1>
 	<p><strong>The graphing solution that might not suit you 📊</strong></p>
 	<hr />
 	<p>What is this? This is a small <a href="https://github.com/usrme/gobarchar">project</a> to generate ASCII bar charts using just query parameters.</p>
 	<br/>
-	<pre>{{.Chart}}</pre>
-	<br/>
-	<hr>
-	<p>Link used to generate the current chart: <a href="{{.ChartUrl}}">{{.ChartUrl}}</a></p>
-	<hr>
-</body>
+`
+
+var htmlSecondHalf string = `<hr>
 <footer>
 	<small>Hosted on <a href="https://fly.io">Fly</a>.</small>
 </footer>
+</body>
 </html>`
-
-type pageData struct {
-	Title    string
-	Chart    string
-	ChartUrl string
-}
 
 type entry struct {
 	Label string
@@ -94,17 +78,12 @@ func PresentBarChart(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pageData := pageData{
-		Title:    "GoBarChar",
-		Chart:    chart,
-		ChartUrl: r.URL.String(),
-	}
-
-	err := tpl.Execute(w, pageData)
-	if err != nil {
-		log.Printf("%v", err)
-		http.Error(w, "something went wrong...", http.StatusInternalServerError)
-	}
+	chartUrl := r.URL.String()
+	html := fmt.Sprintf(
+		"%s<pre>%s</pre><br/><hr><p>Link used to generate the current chart: <a href='%s'>%s</a></p>%s",
+		htmlFirstHalf, chart, chartUrl, chartUrl, htmlSecondHalf,
+	)
+	w.Write([]byte(html))
 }
 
 func encodeRandomQuery(r *http.Request) {
