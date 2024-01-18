@@ -1,6 +1,6 @@
 builds:
   - id: gobarchar
-    main: .
+    main: cmd/gobarchar/main.go
     binary: gobarchar
     ldflags:
       # https://pkg.go.dev/cmd/link
