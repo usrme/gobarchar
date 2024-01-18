@@ -1,10 +1,6 @@
-import { getOptions, getScenario, testUrlWithParams } from "./helpers.js";
+import { generateOptions, testUrlWithParams } from "./helpers.js";
 
-export const options = Object.assign({}, getOptions("fly-static-data"), {
-  scenarios: {
-    fly: getScenario("fly"),
-  },
-});
+export const options = generateOptions("fly");
 
 export function fly() {
   testUrlWithParams("https://gobarchar.fly.dev/");

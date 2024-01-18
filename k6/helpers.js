@@ -15,7 +15,7 @@ const executor = "constant-vus";
 const dRb = true;
 const vus = 1;
 
-export const getOptions = (name) => {
+const getOptions = (name) => {
   return Object.assign(
     {},
     {
@@ -31,13 +31,20 @@ export const getOptions = (name) => {
   );
 };
 
-export const getScenario = (exec) => {
+const getScenario = (exec) => {
   return {
     duration: duration,
     exec: exec,
     executor: executor,
   };
 };
+
+export const generateOptions = (key) =>
+  Object.assign({}, getOptions(`${key}-static-data`), {
+    scenarios: {
+      [key]: getScenario(key),
+    },
+  });
 
 export const testUrlWithParams = (url) => {
   http.get(`${url}?${searchParams.toString()}`);
