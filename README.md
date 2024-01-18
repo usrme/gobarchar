@@ -74,7 +74,7 @@ go install github.com/usrme/gobarchar@latest
 
 - download a binary from the [releases](https://github.com/usrme/gobarchar/releases) page
 
-- build it yourself (requires Go 1.21+):
+- build it yourself (requires Go 1.17+):
 
 ```bash
 git clone https://github.com/usrme/gobarchar.git
