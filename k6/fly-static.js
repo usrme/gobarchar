@@ -1,21 +1,11 @@
-import { dRb, vus, flyScenario, testFlyStatic } from './helpers.js'
+import { getOptions, getScenario, testUrlWithParams } from "./helpers.js";
 
-export const options = {
-  ext: {
-    loadimpact: {
-      projectID: `${__ENV.PROJECT_ID}`,
-      name: "fly-static-data"
-    }
-  },
-
-  discardResponseBodies: dRb,
-  vus: vus,
-
+export const options = Object.assign({}, getOptions("fly-static-data"), {
   scenarios: {
-    fly: flyScenario,
+    fly: getScenario("fly"),
   },
-};
+});
 
 export function fly() {
-  testFlyStatic();
+  testUrlWithParams("https://gobarchar.fly.dev/");
 }

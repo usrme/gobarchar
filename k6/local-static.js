@@ -1,22 +1,11 @@
-import { dRb, vus, localScenario, testLocalStatic } from './helpers.js'
-import http from 'k6/http';
+import { getOptions, getScenario, testUrlWithParams } from "./helpers.js";
 
-export const options = {
-  ext: {
-    loadimpact: {
-      projectID: `${__ENV.PROJECT_ID}`,
-      name: "local-static-data"
-    }
-  },
-
-  discardResponseBodies: dRb,
-  vus: vus,
-
+export const options = Object.assign({}, getOptions("local-static-data"), {
   scenarios: {
-    local: localScenario,
+    local: getScenario("local"),
   },
-};
+});
 
 export function local() {
-  testLocalStatic();
+  testUrlWithParams("http://localhost:8080/");
 }
