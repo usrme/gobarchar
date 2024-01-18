@@ -1,5 +1,6 @@
 # gobarchar
 
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/usrme/gobarchar)
 [![test](https://github.com/usrme/gobarchar/actions/workflows/test.yml/badge.svg)](https://github.com/usrme/gobarchar/actions/workflows/test.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/usrme/gobarchar)](https://goreportcard.com/report/github.com/usrme/gobarchar)
 
