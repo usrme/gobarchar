@@ -1,7 +1,9 @@
 package gobarchar
 
 import (
+	"crypto/sha1"
 	"fmt"
+	"io"
 	"math"
 	"math/rand"
 	"net/http"
@@ -70,6 +72,19 @@ func PresentBarChart(w http.ResponseWriter, r *http.Request) {
 	}
 
 	chart := createBarChart(r)
+
+	h := sha1.New()
+	// TODO: See if 'r.URL.RawQuery' would be faster to hash
+	io.WriteString(h, chart)
+	etag := fmt.Sprintf("%x", h.Sum(nil))
+
+	if match := r.Header.Get("If-None-Match"); match != "" {
+		if strings.Contains(match, etag) {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+	w.Header().Set("Etag", etag)
 
 	// Skip all templating if user is requesting through 'curl' or 'wget'
 	agent := r.UserAgent()
