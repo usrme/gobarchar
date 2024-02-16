@@ -76,6 +76,36 @@ Avg.    12 ████████████▌
 Total  142 █████████████████████████
 			`),
 		},
+		{
+			name:        "Keep HTML entity '%20' when no 'spaces' parameter",
+			queryParams: "Year%202024=10&Year%202023=8",
+			expected: strings.TrimSpace(`
+Year%202024   10 █████████████████████████
+Year%202023    8 ████████████████████
+Avg.           9 ██████████████████████▌
+Total         18 █████████████████████████
+			`),
+		},
+		{
+			name:        "Replace HTML entity '%20' with spaces",
+			queryParams: "Year%202024=10&Year%202023=8&spaces=yes",
+			expected: strings.TrimSpace(`
+Year 2024   10 █████████████████████████
+Year 2023    8 ████████████████████
+Avg.         9 ██████████████████████▌
+Total       18 █████████████████████████
+			`),
+		},
+		{
+			name:        "Invalid value for 'spaces' parameter",
+			queryParams: "Year%202024=10&Year%202023=8&spaces=invalid",
+			expected: strings.TrimSpace(`
+Year%202024   10 █████████████████████████
+Year%202023    8 ████████████████████
+Avg.           9 ██████████████████████▌
+Total         18 █████████████████████████
+			`),
+		},
 	}
 
 	for _, testCase := range testCases {

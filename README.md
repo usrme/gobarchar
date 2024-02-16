@@ -18,6 +18,10 @@ Try the same link as in the demo above, https://gobarchar.usrme.xyz/?2012=8&2013
 - Sort ascending or descending, or don't sort at all
   - Add the `sort` query parameter and pass either `asc` or `desc` as the value
   - The default is to keep the rows ordered as the query parameters are
+- Replace `%20` HTML entity with a space
+  - Add the `spaces` query parameter and pass `yes` as the value
+    - Any other value will be disregarded
+  - The default is to not do any replacing
 - Maybe coming: change layout from horizontal to vertical!
 
 ## Usage

@@ -8,6 +8,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"golang.org/x/exp/slices"
 )
 
 var htmlFirstHalf string = `<!DOCTYPE html>
@@ -134,20 +136,21 @@ func createBarChart(r *http.Request) string {
 	// the 'sort' query parameter isn't given.
 	raw := r.URL.RawQuery
 	orderedParams := strings.Split(raw, "&")
-
-	sortIndex := -1
-	for i, pair := range orderedParams {
+	addSpaces := slices.Contains(orderedParams, "spaces=yes")
+	for _, pair := range orderedParams {
 		kv := strings.Split(pair, "=")
-		// TODO: Add logic for 'layout' query parameter to support vertical layout too
-		if kv[0] == "sort" {
-			// Store where the 'sort' query parameter was first found
-			sortIndex = i
-			// Don't parse 'sort' query parameter as that is not part of the data
+		key := kv[0]
+		// Don't parse certain query parameters as they are not part of the data
+		if key == "sort" || key == "spaces" {
 			continue
 		}
 		count, err := strconv.Atoi(kv[1])
 		if err == nil {
-			entries = append(entries, entry{Label: kv[0], Value: count})
+			if addSpaces {
+				key = strings.Replace(key, "%20", " ", -1)
+			}
+
+			entries = append(entries, entry{Label: key, Value: count})
 			if count > maxValue {
 				maxValue = count
 			}
@@ -156,21 +159,23 @@ func createBarChart(r *http.Request) string {
 	}
 
 	// Only remove the 'sort' query parameter if it was found.
-	//
-	// This is at O(n) complexity, but I'm more interested in keeping the order.
-	if sortIndex != -1 {
-		orderedParams = append(orderedParams[:sortIndex], orderedParams[sortIndex+1:]...)
-	}
-
 	sortOrder := r.URL.Query().Get("sort")
-	if sortOrder != "asc" && sortOrder != "desc" {
-		sortOrder = ""
+	if sortOrder != "" {
+		i := slices.Index(orderedParams, fmt.Sprintf("sort=%s", sortOrder))
+		orderedParams = slices.Delete(orderedParams, i, i+1)
 	}
 
 	if sortOrder == "asc" {
 		sort.Sort(chartData(entries))
 	} else if sortOrder == "desc" {
 		sort.Sort(sort.Reverse(chartData(entries)))
+	}
+
+	// Only remove the 'spaces' query parameter if it was found.
+	spaces := r.URL.Query().Get("spaces")
+	if spaces != "" {
+		i := slices.Index(orderedParams, fmt.Sprintf("spaces=%s", spaces))
+		orderedParams = slices.Delete(orderedParams, i, i+1)
 	}
 
 	avg := math.Round(float64(total) / float64(len(entries)))
