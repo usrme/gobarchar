@@ -46,6 +46,10 @@ var htmlFirstHalf string = `<!DOCTYPE html>
 	<br/>
 `
 
+var exampleQueries = map[string]string{
+	"List of presidents of the United States by age at start of presidency": "George%20Washington=57&John%20Adams=61&Thomas%20Jefferson=57&James%20Madison=57&James%20Monroe=58&John%20Quincy%20Adams=57&Andrew%20Jackson=61&Martin%20Van%20Buren=54&William%20Henry%20Harrison=68&John%20Tyler=51&James%20K.%20Polk=49&Zachary%20Taylor=64&Millard%20Fillmore=50&Franklin%20Pierce=48&James%20Buchanan=65&Abraham%20Lincoln=52&Andrew%20Johnson=56&Ulysses%20S.%20Grant=46&Rutherford%20B.%20Hayes=54&James%20A.%20Garfield=49&Chester%20A.%20Arthur=51&Grover%20Cleveland=55&Benjamin%20Harrison=55&William%20McKinley=54&Theodore%20Roosevelt=42&William%20Howard%20Taft=51&Woodrow%20Wilson=56&Warren%20G.%20Harding=55&Calvin%20Coolidge=51&Herbert%20Hoover=54&Franklin%20D.%20Roosevelt=51&Harry%20S.%20Truman=60&Dwight%20D.%20Eisenhower=62&John%20F.%20Kennedy=43&Lyndon%20B.%20Johnson=55&Richard%20Nixon=56&Gerald%20Ford=61&Jimmy%20Carter=52&Ronald%20Reagan=69&George%20H.%20W.%20Bush=64&Bill%20Clinton=46&George%20W.%20Bush=54&Barack%20Obama=47&Donald%20Trump=70&Joe%20Biden=78&spaces=yes&sort=asc",
+}
+
 var htmlSecondHalf string = `<hr>
 <footer>
 	<small>Hosted on <a href="https://fly.io">Fly</a>.</small>
@@ -82,8 +86,8 @@ func PresentBarChart(w http.ResponseWriter, r *http.Request) {
 
 	chartUrl := r.URL.String()
 	html := fmt.Sprintf(
-		"%s<pre>%s</pre><br/><hr><p>Link used to generate the current chart: <a href='%s'>%s</a></p>%s",
-		htmlFirstHalf, chart, chartUrl, chartUrl, htmlSecondHalf,
+		"%s<pre>%s</pre><br/><hr><p>Link used to generate the current chart: <a href='%s'>%s</a></p>%s%s",
+		htmlFirstHalf, chart, chartUrl, chartUrl, createListItems("/", exampleQueries), htmlSecondHalf,
 	)
 	w.Write([]byte(html))
 }
@@ -247,4 +251,21 @@ func padRight(str string, length int) string {
 		return str
 	}
 	return str + strings.Repeat(" ", length-len(str))
+}
+
+func createListItems(url string, elements map[string]string) string {
+	start := `<hr/>
+	<p>More example queries:</p>
+	<ul>
+`
+	end := `
+	</ul>
+`
+	var listItems strings.Builder
+	for k, v := range elements {
+		listItems.WriteString(
+			fmt.Sprintf("<li><a href='%s?%s'>%s</a></li>", url, v, k),
+		)
+	}
+	return fmt.Sprintf("%s%s%s", start, listItems.String(), end)
 }
