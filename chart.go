@@ -36,10 +36,13 @@ var htmlFirstHalf string = `<!DOCTYPE html>
 	a {
 		word-break: break-all;
 	}
+	h1 > a, h1 > a:visited {
+		color: black;
+	}
 </style>
 </head>
 <body>
-	<h1>GoBarChar</h1>
+	<h1><a href="/">GoBarChar</a></h1>
 	<p><strong>The graphing solution that might not suit you 📊</strong></p>
 	<hr />
 	<p>What is this? This is a small <a href="https://github.com/usrme/gobarchar">project</a> to generate ASCII bar charts using just query parameters.</p>
