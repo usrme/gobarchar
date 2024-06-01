@@ -33,7 +33,8 @@ func main() {
 		port = defaultPort
 	}
 
-	http.Handle("/", timer(etag(http.HandlerFunc(gobarchar.PresentBarChart))))
+	exampleQueryHtml := gobarchar.CreateListItems("/", gobarchar.Examples)
+	http.Handle("/", timer(etag(http.HandlerFunc(gobarchar.PresentBarChart(exampleQueryHtml)))))
 
 	log.Println("listening on:", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

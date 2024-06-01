@@ -49,11 +49,6 @@ var htmlFirstHalf string = `<!DOCTYPE html>
 	<br/>
 `
 
-var exampleQueries = map[string]string{
-	"Presidents of the United States by age at start of presidency":                    "George%20Washington%20(1789)=57&John%20Adams%20(1797)=61&Thomas%20Jefferson%20(1801)=57&James%20Madison%20(1809)=57&James%20Monroe%20(1817)=58&John%20Quincy%20Adams%20(1825)=57&Andrew%20Jackson%20(1829)=61&Martin%20Van%20Buren%20(1837)=54&William%20Henry%20Harrison%20(1841)=68&John%20Tyler%20(1841)=51&James%20K.%20Polk%20(1845)=49&Zachary%20Taylor%20(1849)=64&Millard%20Fillmore%20(1850)=50&Franklin%20Pierce%20(1853)=48&James%20Buchanan%20(1857)=65&Abraham%20Lincoln%20(1861)=52&Andrew%20Johnson%20(1865)=56&Ulysses%20S.%20Grant%20(1869)=46&Rutherford%20B.%20Hayes%20(1877)=54&James%20A.%20Garfield%20(1881)=49&Chester%20A.%20Arthur%20(1881)=51&Grover%20Cleveland%20(first%20term)%20(1885)=47&Benjamin%20Harrison%20(1889)=55&Grover%20Cleveland%20(second%20term)%20(1893)=55&William%20McKinley%20(1897)=54&Theodore%20Roosevelt%20(1901)=42&William%20Howard%20Taft%20(1909)=51&Woodrow%20Wilson%20(1913)=56&Warren%20G.%20Harding%20(1921)=55&Calvin%20Coolidge%20(1923)=51&Herbert%20Hoover%20(1929)=54&Franklin%20D.%20Roosevelt%20(1933)=51&Harry%20S.%20Truman%20(1945)=60&Dwight%20D.%20Eisenhower%20(1953)=62&John%20F.%20Kennedy%20(1961)=43&Lyndon%20B.%20Johnson%20(1963)=55&Richard%20Nixon%20(1969)=56&Gerald%20Ford%20(1974)=61&Jimmy%20Carter%20(1977)=52&Ronald%20Reagan%20(1981)=69&George%20H.%20W.%20Bush%20(1989)=64&Bill%20Clinton%20(1993)=46&George%20W.%20Bush%20(2001)=54&Barack%20Obama%20(2009)=47&Donald%20Trump%20(2017)=70&Joe%20Biden%20(2021)=78&spaces=yes&sort=asc",
-	"Percentage of community PRs opened against Terraform after license change (2023)": "February=15&March=23&April=29&May=23&June=23&July=20&August=9&September=10",
-}
-
 var htmlSecondHalf string = `<hr>
 <footer>
 	<small>Hosted on <a href="https://fly.io">Fly</a>.</small>
@@ -73,27 +68,29 @@ func (a chartData) Len() int           { return len(a) }
 func (a chartData) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a chartData) Less(i, j int) bool { return a[i].Value < a[j].Value }
 
-func PresentBarChart(w http.ResponseWriter, r *http.Request) {
-	// Check if there are any query parameters; if not, add random key-value pairs
-	if len(r.URL.Query()) == 0 {
-		encodeRandomQuery(r)
+func PresentBarChart(examples string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Check if there are any query parameters; if not, add random key-value pairs
+		if len(r.URL.Query()) == 0 {
+			encodeRandomQuery(r)
+		}
+
+		chart := createBarChart(r)
+
+		// Skip all templating if user is requesting through 'curl' or 'wget'
+		agent := r.UserAgent()
+		if strings.HasPrefix(agent, "curl") || strings.HasPrefix(agent, "Wget") {
+			w.Write([]byte(chart))
+			return
+		}
+
+		chartUrl := r.URL.String()
+		html := fmt.Sprintf(
+			"%s<pre>%s</pre><br/><hr><p>Link used to generate the current chart: <a href='%s'>%s</a></p>%s%s",
+			htmlFirstHalf, chart, chartUrl, chartUrl, examples, htmlSecondHalf,
+		)
+		w.Write([]byte(html))
 	}
-
-	chart := createBarChart(r)
-
-	// Skip all templating if user is requesting through 'curl' or 'wget'
-	agent := r.UserAgent()
-	if strings.HasPrefix(agent, "curl") || strings.HasPrefix(agent, "Wget") {
-		w.Write([]byte(chart))
-		return
-	}
-
-	chartUrl := r.URL.String()
-	html := fmt.Sprintf(
-		"%s<pre>%s</pre><br/><hr><p>Link used to generate the current chart: <a href='%s'>%s</a></p>%s%s",
-		htmlFirstHalf, chart, chartUrl, chartUrl, createListItems("/", exampleQueries), htmlSecondHalf,
-	)
-	w.Write([]byte(html))
 }
 
 func encodeRandomQuery(r *http.Request) {
@@ -255,21 +252,4 @@ func padRight(str string, length int) string {
 		return str
 	}
 	return str + strings.Repeat(" ", length-len(str))
-}
-
-func createListItems(url string, elements map[string]string) string {
-	start := `<hr/>
-	<p>More example queries:</p>
-	<ul>
-`
-	end := `
-	</ul>
-`
-	var listItems strings.Builder
-	for k, v := range elements {
-		listItems.WriteString(
-			fmt.Sprintf("<li><a href='%s?%s'>%s</a></li>", url, v, k),
-		)
-	}
-	return fmt.Sprintf("%s%s%s", start, listItems.String(), end)
 }
