@@ -58,3 +58,4 @@ func CreateListItems(url string, elements exampleQueries) string {
 	}
 	return fmt.Sprintf("%s%s%s", start, listItems.String(), end)
 }
+

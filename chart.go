@@ -2,7 +2,6 @@ package gobarchar
 
 import (
 	"fmt"
-	"math"
 	"math/rand"
 	"net/http"
 	"sort"
@@ -131,7 +130,7 @@ func randomMonth() string {
 func createBarChart(r *http.Request) string {
 	// Use custom type to make sorting easier
 	entries := make([]entry, 0)
-	maxValue, total := 0, 0
+	maxValue, total := 0.0, 0.0
 	// Use 'RawQuery' instead of something like 'Query()' or other automatic
 	// methods to parse query parameters as those get turned into maps that
 	// then lose their order of appearance in the original query.
@@ -149,7 +148,7 @@ func createBarChart(r *http.Request) string {
 		if key == "sort" || key == "spaces" {
 			continue
 		}
-		count, err := strconv.Atoi(kv[1])
+		count, err := strconv.ParseFloat(kv[1], 64)
 		if err == nil {
 			if addSpaces {
 				key = strings.Replace(key, "%20", " ", -1)
@@ -183,21 +182,29 @@ func createBarChart(r *http.Request) string {
 		orderedParams = slices.Delete(orderedParams, i, i+1)
 	}
 
-	avg := math.Round(float64(total) / float64(len(entries)))
+	avg := total / float64(len(entries))
 
 	entries = append(entries, entry{Label: "Avg.", Value: avg})
-	orderedParams = append(orderedParams, fmt.Sprintf("%s=%f", "Avg.", avg))
+	orderedParams = append(orderedParams, fmt.Sprintf("%s=%.2f", "Avg.", avg))
 
-	entries = append(entries, entry{Label: "Total", Value: float64(total)})
-	orderedParams = append(orderedParams, fmt.Sprintf("%s=%f", "Total", float64(total)))
+	entries = append(entries, entry{Label: "Total", Value: total})
+	orderedParams = append(orderedParams, fmt.Sprintf("%s=%.2f", "Total", total))
 
-	increment := float64(maxValue) / 25.0
+	increment := maxValue / 25.0
 
 	// Find the longest label to determine padding later on
 	longestLabelLength := 0
 	for _, entry := range entries {
 		if len(entry.Label) > longestLabelLength {
 			longestLabelLength = len(entry.Label)
+		}
+	}
+
+	longestValueLength := 0
+	for _, entry := range entries {
+		valueStr := formatValue(entry.Value)
+		if len(valueStr) > longestValueLength {
+			longestValueLength = len(valueStr)
 		}
 	}
 
@@ -209,7 +216,7 @@ func createBarChart(r *http.Request) string {
 		if entries[i].Label == "Total" {
 			continue
 		}
-		barChunks := int(float64(entries[i].Value) * 8 / increment)
+		barChunks := int(entries[i].Value * 8 / increment)
 		remainder := barChunks % 8
 		barChunks /= 8
 
@@ -218,25 +225,25 @@ func createBarChart(r *http.Request) string {
 		}
 
 		bar := calculateBars(barChunks, remainder)
+		valueStr := formatValue(entries[i].Value)
 		chartContent.WriteString(
 			fmt.Sprintf(
 				"%s %s %s\n",
-				padRight(entries[i].Label, longestLabelLength),
-				padRight(fmt.Sprintf("%.2f", entries[i].Value), len(fmt.Sprintf("%.2f", float64(total)))),
-				bar,
+				padRight(entries[i].Label, longestLabelLength), padLeft(valueStr, longestValueLength), bar,
 			),
 		)
 	}
 	bar := calculateBars(maximumBarChunk, 0)
-	chartContent.WriteString(
-		fmt.Sprintf(
-			"%s %s %s\n",
-			padRight("Total", longestLabelLength),
-			padRight(fmt.Sprintf("%.2f", float64(total)), 1),
-			bar,
-		),
-	)
+	totalStr := formatValue(total)
+	chartContent.WriteString(fmt.Sprintf("%s %s %s\n", padRight("Total", longestLabelLength), padLeft(totalStr, longestValueLength), bar))
 	return chartContent.String()
+}
+
+func formatValue(value float64) string {
+	if value == float64(int(value)) {
+		return fmt.Sprintf("%4d", int(value))
+	}
+	return fmt.Sprintf("%6.2f", value)
 }
 
 func calculateBars(count, remainder int) string {
@@ -261,4 +268,11 @@ func padRight(str string, length int) string {
 		return str
 	}
 	return str + strings.Repeat(" ", length-len(str))
+}
+
+func padLeft(str string, length int) string {
+	if len(str) >= length {
+		return str
+	}
+	return strings.Repeat(" ", length-len(str)) + str
 }
