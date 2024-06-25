@@ -58,7 +58,7 @@ var htmlSecondHalf string = `<hr>
 
 type entry struct {
 	Label string
-	Value int
+	Value float64
 }
 
 // Create custom type that implements 'sort.Interface' for easier sorting
@@ -155,7 +155,7 @@ func createBarChart(r *http.Request) string {
 				key = strings.Replace(key, "%20", " ", -1)
 			}
 
-			entries = append(entries, entry{Label: key, Value: count})
+			entries = append(entries, entry{Label: key, Value: float64(count)})
 			if count > maxValue {
 				maxValue = count
 			}
@@ -185,11 +185,11 @@ func createBarChart(r *http.Request) string {
 
 	avg := math.Round(float64(total) / float64(len(entries)))
 
-	entries = append(entries, entry{Label: "Avg.", Value: int(avg)})
-	orderedParams = append(orderedParams, fmt.Sprintf("%s=%d", "Avg.", int(avg)))
+	entries = append(entries, entry{Label: "Avg.", Value: avg})
+	orderedParams = append(orderedParams, fmt.Sprintf("%s=%f", "Avg.", avg))
 
-	entries = append(entries, entry{Label: "Total", Value: total})
-	orderedParams = append(orderedParams, fmt.Sprintf("%s=%d", "Total", total))
+	entries = append(entries, entry{Label: "Total", Value: float64(total)})
+	orderedParams = append(orderedParams, fmt.Sprintf("%s=%f", "Total", float64(total)))
 
 	increment := float64(maxValue) / 25.0
 
@@ -220,13 +220,22 @@ func createBarChart(r *http.Request) string {
 		bar := calculateBars(barChunks, remainder)
 		chartContent.WriteString(
 			fmt.Sprintf(
-				"%s %4d %s\n",
-				padRight(entries[i].Label, longestLabelLength), entries[i].Value, bar,
+				"%s %s %s\n",
+				padRight(entries[i].Label, longestLabelLength),
+				padRight(fmt.Sprintf("%.2f", entries[i].Value), len(fmt.Sprintf("%.2f", float64(total)))),
+				bar,
 			),
 		)
 	}
 	bar := calculateBars(maximumBarChunk, 0)
-	chartContent.WriteString(fmt.Sprintf("%s %4d %s\n", padRight("Total", longestLabelLength), total, bar))
+	chartContent.WriteString(
+		fmt.Sprintf(
+			"%s %s %s\n",
+			padRight("Total", longestLabelLength),
+			padRight(fmt.Sprintf("%.2f", float64(total)), 1),
+			bar,
+		),
+	)
 	return chartContent.String()
 }
 

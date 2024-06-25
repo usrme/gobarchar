@@ -31,7 +31,7 @@ var (
 			"February", "March", "April", "May", "June", "July", "August", "September",
 		},
 		Values: []string{
-			"15", "23", "29", "23", "23", "20", "9", "10",
+			"14.71", "22.83", "28.57", "22.58", "23.29", "20.29", "9.30", "9.52",
 		},
 	}
 	Examples = exampleQueries{presidentQuery, terraformQuery}
