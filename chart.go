@@ -165,22 +165,11 @@ func createBarChart(r *http.Request) string {
 
 	// Only remove the 'sort' query parameter if it was found.
 	sortOrder := r.URL.Query().Get("sort")
-	if sortOrder != "" {
-		i := slices.Index(orderedParams, fmt.Sprintf("sort=%s", sortOrder))
-		orderedParams = slices.Delete(orderedParams, i, i+1)
-	}
 
 	if sortOrder == "asc" {
 		sort.Sort(chartData(entries))
 	} else if sortOrder == "desc" {
 		sort.Sort(sort.Reverse(chartData(entries)))
-	}
-
-	// Only remove the 'spaces' query parameter if it was found.
-	spaces := r.URL.Query().Get("spaces")
-	if spaces != "" {
-		i := slices.Index(orderedParams, fmt.Sprintf("spaces=%s", spaces))
-		orderedParams = slices.Delete(orderedParams, i, i+1)
 	}
 
 	avg := total / float64(len(entries))
@@ -211,7 +200,7 @@ func createBarChart(r *http.Request) string {
 
 	var chartContent strings.Builder
 	maximumBarChunk := 0
-	for i := range orderedParams {
+	for i := range entries {
 		// Skip parsing the total for now to not interfere with calculating
 		// the maximum number of bar chunks for all of the labels
 		if entries[i].Label == "Total" {
