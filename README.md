@@ -74,7 +74,7 @@ If no query parameters are provided then random data is generated.
 - using `go install`:
 
 ```bash
-go install github.com/usrme/gobarchar@latest
+go install github.com/usrme/gobarchar/cmd/...@latest
 ```
 
 - download a binary from the [releases](https://github.com/usrme/gobarchar/releases) page
