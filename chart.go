@@ -43,7 +43,7 @@ var htmlFirstHalf string = `<!DOCTYPE html>
 </head>
 <body>
 	<h1><a href="/">GoBarChar</a></h1>
-	<p><strong>The graphing solution that might not suit you 📊</strong></p>
+	<p><strong>The charting solution that might not suit you 📊</strong></p>
 	<hr />
 	<p>What is this? This is a small <a href="https://github.com/usrme/gobarchar">project</a> to generate ASCII bar charts using just query parameters.</p>
 	<br/>
