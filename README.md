@@ -49,25 +49,22 @@ Loading the page without any query parameters randomly chooses some data and wil
 After [installation](#installation), execute `gobarchar`, which by default starts a web server listening on port 8080, though you can specify a different port through the `PORT` environment variable. Once the web server is running, you can use something like `curl` to perform requests:
 
 ```console
-$ # First session
-$ gobarchar
-2024/01/07 20:02:20 listening on: 8080
-$ # Second session
+$ gobarchar &
+[1] 32357
+2024/07/26 12:23:13 listening on: 8080
 $ curl localhost:8080
-December   95 █████████████████████████
-January     9 ██▎
-July       88 ███████████████████████▏
-June        8 ██
-March      58 ███████████████▎
-November   87 ██████████████████████▉
-Avg.       58 ███████████████▎
-Total     345 █████████████████████████
-$ # First session
-2024/01/07 20:02:20 listening on: 8080
-2024/01/07 20:02:29 completed in: 145.072µs
+2024/07/26 12:23:16 completed in: 87.958µs
+August        32 ████████████████
+February      50 █████████████████████████
+July           7 ███▌
+March          6 ███
+November      44 ██████████████████████
+September      8 ████
+Avg.       24.50 ████████████▎
+Total        147 █████████████████████████
 ```
 
-If no query parameters are provided then random data is generated.
+If no query parameters are provided then random data is generated. The "completed in" log line isn't a part of the chart output, but rather the result of using [job control](https://jvns.ca/blog/2024/07/03/reasons-to-use-job-control/) and having the standard output of a background process being interleaved with the standard output of a foreground process.
 
 ## Installation
 
