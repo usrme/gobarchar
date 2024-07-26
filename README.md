@@ -22,7 +22,11 @@ Try the same link as in the demo above, https://gobarchar.usrme.xyz/?2012=8&2013
   - Add the `spaces` query parameter and pass `yes` as the value
     - Any other value will be disregarded
   - The default is to not do any replacing
-- Maybe coming: change layout from horizontal to vertical!
+- Display a custom title for the chart to make sharing charts better
+  - Add the `title` query parameter and any value you want
+    - For `curl` requests the value needs to be HTML encoded
+      - Something like the following could be used to automate this: `curl "http://localhost:8080/?February=5&March=20&title=$(echo 'Title with spaces in it' | python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.stdin.read().strip()))')"`
+      - Alternatively, after rendering the chart with the title in the browser, just copy the generated link from the page
 
 ## Usage
 

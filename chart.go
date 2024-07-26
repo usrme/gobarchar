@@ -2,6 +2,7 @@ package gobarchar
 
 import (
 	"fmt"
+	"html"
 	"math/rand"
 	"net/http"
 	"sort"
@@ -142,11 +143,17 @@ func createBarChart(r *http.Request) string {
 	raw := r.URL.RawQuery
 	orderedParams := strings.Split(raw, "&")
 	addSpaces := slices.Contains(orderedParams, "spaces=yes")
+
+	var title string
 	for _, pair := range orderedParams {
 		kv := strings.Split(pair, "=")
 		key := kv[0]
 		// Don't parse certain query parameters as they are not part of the data
-		if key == "sort" || key == "spaces" {
+		switch key {
+		case "sort", "spaces":
+			continue
+		case "title":
+			title = strings.Replace(kv[1], "%20", " ", -1)
 			continue
 		}
 		count, err := strconv.ParseFloat(kv[1], 64)
@@ -199,6 +206,10 @@ func createBarChart(r *http.Request) string {
 	}
 
 	var chartContent strings.Builder
+	if title != "" {
+		chartContent.WriteString(title + "\n\n")
+	}
+
 	maximumBarChunk := 0
 	for i := range entries {
 		// Skip parsing the total for now to not interfere with calculating
@@ -226,7 +237,7 @@ func createBarChart(r *http.Request) string {
 	bar := calculateBars(maximumBarChunk, 0)
 	totalStr := formatValue(total)
 	chartContent.WriteString(fmt.Sprintf("%s %s %s\n", padRight("Total", longestLabelLength), padLeft(totalStr, longestValueLength), bar))
-	return chartContent.String()
+	return html.UnescapeString(chartContent.String())
 }
 
 func formatValue(value float64) string {

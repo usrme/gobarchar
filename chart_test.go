@@ -106,6 +106,58 @@ Avg.           9 █████████████████████
 Total         18 █████████████████████████
 			`),
 		},
+		{
+			name:        "Add 'title' parameter with literal spaces",
+			queryParams: "A=10&B=20&C=15&title=A descriptive title",
+			expected: strings.TrimSpace(`
+A descriptive title
+
+A       10 ████████████▌
+B       20 █████████████████████████
+C       15 ██████████████████▊
+Avg.    15 ██████████████████▊
+Total   45 █████████████████████████
+			`),
+		},
+		{
+			name:        "Add 'title' parameter with HTML entity spaces",
+			queryParams: "A=10&B=20&C=15&title=A%20descriptive%20title",
+			expected: strings.TrimSpace(`
+A descriptive title
+
+A       10 ████████████▌
+B       20 █████████████████████████
+C       15 ██████████████████▊
+Avg.    15 ██████████████████▊
+Total   45 █████████████████████████
+			`),
+		},
+		{
+			name:        "Add 'title' parameter as first parameter",
+			queryParams: "title=A descriptive title&A=10&B=20&C=15",
+			expected: strings.TrimSpace(`
+A descriptive title
+
+A       10 ████████████▌
+B       20 █████████████████████████
+C       15 ██████████████████▊
+Avg.    15 ██████████████████▊
+Total   45 █████████████████████████
+			`),
+		},
+		{
+			name:        "Add 'title' parameter with other parameters",
+			queryParams: "A=10&B=20&C=15&sort=desc&title=A descriptive title",
+			expected: strings.TrimSpace(`
+A descriptive title
+
+B       20 █████████████████████████
+C       15 ██████████████████▊
+A       10 ████████████▌
+Avg.    15 ██████████████████▊
+Total   45 █████████████████████████
+			`),
+		},
 	}
 
 	for _, testCase := range testCases {
